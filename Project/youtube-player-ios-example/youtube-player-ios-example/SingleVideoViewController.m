@@ -22,27 +22,28 @@
 
   // For a full list of player parameters, see the documentation for the HTML5 player
   // at: https://developers.google.com/youtube/player_parameters?playerVersion=HTML5
-  NSDictionary *playerVars = @{
-      @"controls" : @0,
-      @"playsinline" : @1,
-      @"autohide" : @1,
-      @"showinfo" : @0,
-      @"modestbranding" : @1
-  };
+    NSDictionary *playerVars = @{
+                                 @"controls" : @2,
+                                 @"playsinline" : @1,
+                                 @"showinfo" : @0,
+                                 @"modestbranding" : @1
+                                 };
   self.playerView.delegate = self;
   [self.playerView loadWithVideoId:videoId playerVars:playerVars];
-
+  [self.playerView playVideo];
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(receivedPlaybackStartedNotification:)
                                                name:@"Playback started"
                                              object:nil];
 }
-
 - (void)playerView:(YTPlayerView *)ytPlayerView changedStateTo:(YTPlayerState)state {
-  NSString *message = [NSString stringWithFormat:@"Player state changed: %u\n", state];
-  [self appendStatusText:message];
+    NSString *message = [NSString stringWithFormat:@"Player state changed: %u\n", state];
+    [self appendStatusText:message];
 }
-
+-(void)getCurrentTime:(NSString *)time{
+    NSString *current = [NSString stringWithFormat:@"%@", [self getFormattedTime:[time floatValue]]];
+    self.currentTime.text = current;
+}
 - (IBAction)buttonPressed:(id)sender {
   if (sender == self.playButton) {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"Playback started" object:self];
@@ -71,6 +72,25 @@
   }
 }
 
+/**
+ * Private helper method to convert an interval in seconds to minutes.
+ *
+ * @param timeInSeconds a string with the time in seconds.
+ */
+- (NSString*)getFormattedTime:(NSTimeInterval)timeInSeconds {
+    NSInteger seconds = (NSInteger) round(timeInSeconds);
+    NSInteger hours = seconds / (60 * 60);
+    seconds %= (60 * 60);
+    
+    NSInteger minutes = seconds / 60;
+    seconds %= 60;
+    
+    if (hours > 0) {
+        return [NSString stringWithFormat:@"%ld:%02ld:%02ld", (long)hours, (long)minutes, (long)seconds];
+    } else {
+        return [NSString stringWithFormat:@"%ld:%02ld", (long)minutes, (long)seconds];
+    }
+}
 /**
  * Private helper method to add player status in statusTextView and scroll view automatically.
  *

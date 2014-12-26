@@ -38,7 +38,10 @@
                                                name:@"Playback started"
                                              object:nil];
 }
-
+-(void)getCurrentTime:(NSString *)time{
+    NSString *current = [NSString stringWithFormat:@"%@", [self getFormattedTime:[time floatValue]]];
+    self.currentTime.text = current;
+}
 - (IBAction)buttonPressed:(id)sender {
   if (sender == self.playButton) {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"Playback started" object:self];
@@ -62,6 +65,25 @@
   }
 }
 
+/**
+ * Private helper method to convert an interval in seconds to minutes.
+ *
+ * @param timeInSeconds a string with the time in seconds.
+ */
+- (NSString*)getFormattedTime:(NSTimeInterval)timeInSeconds {
+    NSInteger seconds = (NSInteger) round(timeInSeconds);
+    NSInteger hours = seconds / (60 * 60);
+    seconds %= (60 * 60);
+    
+    NSInteger minutes = seconds / 60;
+    seconds %= 60;
+    
+    if (hours > 0) {
+        return [NSString stringWithFormat:@"%ld:%02ld:%02ld", (long)hours, (long)minutes, (long)seconds];
+    } else {
+        return [NSString stringWithFormat:@"%ld:%02ld", (long)minutes, (long)seconds];
+    }
+}
 /**
  * Private helper method to add player status in statusTextView and scroll view automatically.
  *

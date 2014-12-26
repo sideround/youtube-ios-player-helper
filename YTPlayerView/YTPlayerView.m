@@ -47,6 +47,7 @@ NSString static *const kYTPlayerErrorCannotFindVideoErrorCode = @"105";
 NSString static *const kYTPlayerCallbackOnReady = @"onReady";
 NSString static *const kYTPlayerCallbackOnStateChange = @"onStateChange";
 NSString static *const kYTPlayerCallbackOnPlaybackQualityChange = @"onPlaybackQualityChange";
+NSString static *const kYTPlayerCallbackGetCurrentTime = @"getTime";
 NSString static *const kYTPlayerCallbackOnError = @"onError";
 NSString static *const kYTPlayerCallbackOnYouTubeIframeAPIReady = @"onYouTubeIframeAPIReady";
 
@@ -71,7 +72,6 @@ NSString static *const kYTPlayerEmbedUrlRegexPattern = @"^http(s)://(www.)youtub
 }
 
 - (BOOL)loadWithPlaylistId:(NSString *)playlistId playerVars:(NSDictionary *)playerVars {
-
   // Mutable copy because we may have been passed an immutable config dictionary.
   NSMutableDictionary *tempPlayerVars = [[NSMutableDictionary alloc] init];
   [tempPlayerVars setValue:@"playlist" forKey:@"listType"];
@@ -85,6 +85,8 @@ NSString static *const kYTPlayerEmbedUrlRegexPattern = @"^http(s)://(www.)youtub
 #pragma mark - Player methods
 
 - (void)playVideo {
+    [self stringFromEvaluatingJavaScript:@"getTime();"];
+
   [self stringFromEvaluatingJavaScript:@"player.playVideo();"];
 }
 
@@ -527,7 +529,6 @@ NSString static *const kYTPlayerEmbedUrlRegexPattern = @"^http(s)://(www.)youtub
   } else if ([action isEqual:kYTPlayerCallbackOnStateChange]) {
     if ([self.delegate respondsToSelector:@selector(playerView:didChangeToState:)]) {
       YTPlayerState state = kYTPlayerStateUnknown;
-
       if ([data isEqual:kYTPlayerStateEndedCode]) {
         state = kYTPlayerStateEnded;
       } else if ([data isEqual:kYTPlayerStatePlayingCode]) {
@@ -548,6 +549,10 @@ NSString static *const kYTPlayerEmbedUrlRegexPattern = @"^http(s)://(www.)youtub
     if ([self.delegate respondsToSelector:@selector(playerView:didChangeToQuality:)]) {
       YTPlaybackQuality quality = [YTPlayerView playbackQualityForString:data];
       [self.delegate playerView:self didChangeToQuality:quality];
+    }
+  } else if ([action isEqual:kYTPlayerCallbackGetCurrentTime]) {
+    if ([self.delegate respondsToSelector:@selector(getCurrentTime:)]) {
+        return [_delegate getCurrentTime:data];
     }
   } else if ([action isEqual:kYTPlayerCallbackOnError]) {
     if ([self.delegate respondsToSelector:@selector(playerView:receivedError:)]) {
@@ -624,9 +629,8 @@ NSString static *const kYTPlayerEmbedUrlRegexPattern = @"^http(s)://(www.)youtub
   [self addSubview:self.webView];
 
   NSError *error = nil;
-  NSString *path = [[NSBundle mainBundle] pathForResource:@"YTPlayerView-iframe-player"
-                                                   ofType:@"html"
-                                              inDirectory:@"Assets"];
+  NSString *path = [[NSBundle mainBundle] pathForResource:@"YTPlayerView-iframe-player" ofType:@"html"];
+
   NSString *embedHTMLTemplate =
       [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
 

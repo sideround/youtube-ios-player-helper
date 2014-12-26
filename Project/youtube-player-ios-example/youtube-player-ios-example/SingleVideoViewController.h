@@ -26,6 +26,7 @@
 @property(nonatomic, weak) IBOutlet UIButton *reverseButton;
 @property(nonatomic, weak) IBOutlet UIButton *forwardButton;
 @property(nonatomic, weak) IBOutlet UITextView *statusTextView;
+@property(nonatomic, weak) IBOutlet UILabel *currentTime;
 
 - (IBAction)buttonPressed:(id)sender;
 

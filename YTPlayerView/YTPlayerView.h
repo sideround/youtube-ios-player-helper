@@ -74,6 +74,13 @@ typedef enum {
 - (void)playerView:(YTPlayerView *)playerView didChangeToState:(YTPlayerState)state;
 
 /**
+ * Callback invoked when player state is Playing getting the Current time.
+ *
+ * @param time NSString containing the current time.
+ */
+- (void)getCurrentTime:(NSString *)time;
+
+/**
  * Callback invoked when playback quality has changed.
  *
  * @param playerView The YTPlayerView instance where playback quality has changed.
