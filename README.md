@@ -1,20 +1,8 @@
 # YouTube-Player-iOS-Helper
 
-[![Version](http://cocoapod-badges.herokuapp.com/v/YouTube-Player-iOS-Helper/badge.png)](http://cocoadocs.org/docsets/YouTube-Player-iOS-Helper)
-[![Platform](http://cocoapod-badges.herokuapp.com/p/YouTube-Player-iOS-Helper/badge.png)](http://cocoadocs.org/docsets/YouTube-Player-iOS-Helper)
-
-## Usage
-
-To run the example project; clone the repo, and run `pod install` from the Project directory first.
-
-## Requirements
-
 ## Installation
 
-YouTube-Player-iOS-Helper is available through [CocoaPods](http://cocoapods.org), to install
-it simply add the following line to your Podfile:
-
-    pod "youtube-ios-player-helper", "~> 0.1.1"
+Import files from YTPlayerView to your project.
 
 After installing in your project and opening the workspace, to use the library:
 
